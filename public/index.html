@@ -13,13 +13,13 @@
     <!-- This is an SEO Change -->
     <meta name="theme-color" content="#317EFB" />
     <title>Personal Budget</title>
-    <link rel="stylesheet" href="/public/reset.css" />
-    <link rel="stylesheet" href="/public/main.css" />
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./main.css" />
     <!-- This is an SEO Change -->
     <!-- This is an A11y Change -The alternative text-->
-    <link rel="apple-touch-icon" href="/public/bg.png" alt="Laptop and Mobile" />
+    <link rel="apple-touch-icon" href="./bg.png" alt="Laptop and Mobile" />
     <!-- This is an SEO Change -->
-    <link rel="manifest" href="/public/manifest.webmanifest" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <script src="https://d3js.org/d3.v3.min.js"></script>
   </head>
   <body>
@@ -30,8 +30,8 @@
     <nav class="menu">
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/login.html">Login</a></li>
+        <li><a href="./about.html">About</a></li>
+        <li><a href="./login.html">Login</a></li>
         <li><a href="https://google.com">Google</a></li>
       </ul>
     </nav>
@@ -136,6 +136,7 @@
     <!-- <script src="https://d3js.org/d3.v3.min.js"></script> -->
     <script>
       var result = [];
+      var colors = [];
 
       var svg = d3.select("#chart").append("svg").append("g");
 
@@ -186,21 +187,14 @@
         //   "incididunt",
         // ])
         // .domain([...result])
-        .range([
-          "#98abc5",
-          "#8a89a6",
-          "#7b6888",
-          "#6b486b",
-          "#a05d56",
-          "#d0743c",
-          "#ff8c00",
-          "#36a2eb"
-        ]);
+        .range(colors);
 
       function randomData() {
-        axios.get("http://localhost:3000/budget").then(function (res) {
+        axios.get("/budget/fetch").then(function (res) {
           for (var i = 0; i < res.data.length; i++) {
             result[i] = res.data[i].title;
+            colors[i] = res.data[i].color;
+
           }
           // change(randomData());
         });
@@ -342,16 +336,7 @@
         datasets: [
           {
             data: [],
-            backgroundColor: [
-              "#ff6384",
-              "#36a2eb",
-              "#fd6b19",
-              "#8a89a6",
-              "#a05d56",
-              "#7b6888",
-              "#d0743c",
-              "#98abc5",
-            ],
+            backgroundColor: [],
           },
         ],
         labels: [],
@@ -366,10 +351,11 @@
       }
 
       function getBudget() {
-        axios.get("http://localhost:3000/budget").then(function (res) {
+        axios.get("/budget/fetch").then(function (res) {
           for (var i = 0; i < res.data.length; i++) {
             dataSource.datasets[0].data[i] = res.data[i].budget;
             dataSource.labels[i] = res.data[i].title;
+            dataSource.datasets[0].backgroundColor[i] = res.data[i].color;
           }
           createChart();
           // change(getBudget());
